@@ -70,31 +70,6 @@
 
         #endregion
 
-        #region Events
-
-        /// <summary>
-        ///     Occurs when the class is Saved
-        /// </summary>
-        public static event EventHandler<SavedEventArgs> Saved;
-
-        /// <summary>
-        ///     Occurs when the class is Saved
-        /// </summary>
-        public static event EventHandler<SavedEventArgs> Saving;
-
-        /// <summary>
-        ///     Occurs when this instance is marked dirty. 
-        ///     It means the instance has been changed but not saved.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Event raised when an instance is about to change one of its property values.
-        /// </summary>
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -263,6 +238,31 @@
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        ///     Occurs when the class is Saving
+        /// </summary>
+        public static event EventHandler<SavedEventArgs> Saving;
+
+        /// <summary>
+        ///     Occurs when the class is Saved
+        /// </summary>
+        public static event EventHandler<SavedEventArgs> Saved;
+
+        /// <summary>
+        /// Event raised when an instance is about to change one of its property values.
+        /// </summary>
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        /// <summary>
+        ///     Occurs when this instance is marked dirty. 
+        ///     It means the instance has been changed but not saved.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
         #region Indexers
 
         /// <summary>
@@ -279,7 +279,8 @@
 
         #endregion
 
-        #region Operators
+
+        #region Methods Operators
 
         /// <summary>
         /// Checks to see if two business objects are the same.
@@ -306,7 +307,92 @@
 
         #endregion
 
-        #region Public Methods
+        #region Methods Interfaces
+
+        #region IChangeTracking
+
+        /// <summary>
+        /// Resets the object's state to unchanged by accepting the modifications.
+        /// </summary>
+        public void AcceptChanges()
+        {
+            this.Save();
+        }
+
+        #endregion
+
+        #region IDisposable
+
+        /// <summary>
+        /// Disposes the object and frees ressources for the Garbage Collector.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
+
+        #region "INotifyPropertyChanging"
+
+        /// <summary>
+        /// Method called just before a property's value will change.
+        /// </summary>
+        /// <param name="propertyName">The name of the property whose value changing.</param>
+        /// <remarks>
+        /// 
+        /// This method should only be called when a value is definitely going to be changed. This
+        /// should occur after any value validation or other methods are called.
+        /// 
+        /// </remarks>
+        protected virtual void OnPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+            {
+                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+        
+        #region "INotifyPropertyChanged"
+
+        /// <summary>
+        /// Marks an object as being dirty, or changed.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The name of the property to mark dirty.
+        /// </param>
+        protected virtual void MarkChanged(string propertyName)
+        {
+            this.IsChanged = true;
+
+            // No need to check for duplicates since changedProperties 
+            // is just a HashSet.
+            this.changedProperties.Add(propertyName);
+            this.OnPropertyChanged(propertyName);
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event safely.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The property Name.
+        /// </param>
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Methods Public 
 
         /// <summary>
         /// Loads an instance of the object based on the Id.
@@ -321,16 +407,6 @@
 
             instance.MarkOld();
             return instance;
-        }
-
-        /// <summary>
-        /// Marks the object for deletion. It will then be 
-        ///     deleted when the object's Save() method is called.
-        /// </summary>
-        public virtual void Delete()
-        {
-            this.Deleted = true;
-            this.IsChanged = true;
         }
 
         /// <summary>
@@ -356,6 +432,16 @@
         public override int GetHashCode()
         {
             return this.Id.GetHashCode();
+        }
+
+        /// <summary>
+        /// Marks the object for deletion. It will then be 
+        ///     deleted when the object's Save() method is called.
+        /// </summary>
+        public virtual void Delete()
+        {
+            this.Deleted = true;
+            this.IsChanged = true;
         }
 
         /// <summary>
@@ -396,92 +482,24 @@
 
         #endregion
 
-        #region Implemented Interfaces
-
-        #region IChangeTracking
+        #region Methods Protected 
 
         /// <summary>
-        /// Resets the object's state to unchanged by accepting the modifications.
+        /// Raises the Saving event
         /// </summary>
-        public void AcceptChanges()
-        {
-            this.Save();
-        }
-
-        #endregion
-
-        #region IDisposable
-
-        /// <summary>
-        /// Disposes the object and frees ressources for the Garbage Collector.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        #region "INotifyPropertyChanged"
-
-        /// <summary>
-        /// Marks an object as being dirty, or changed.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The name of the property to mark dirty.
+        /// <param name="businessObject">
+        /// The business Object.
         /// </param>
-        protected virtual void MarkChanged(string propertyName)
-        {
-            this.IsChanged = true;
-
-            // No need to check for duplicates since changedProperties 
-            // is just a HashSet.
-            this.changedProperties.Add(propertyName);
-            this.OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event safely.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The property Name.
+        /// <param name="action">
+        /// The action.
         /// </param>
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected static void OnSaving(BusinessBase<T, TKey> businessObject, SaveAction action)
         {
-            if (this.PropertyChanged != null)
+            if (Saving != null)
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                Saving(businessObject, new SavedEventArgs(action));
             }
         }
-
-        #endregion
-
-        #region "INotifyPropertyChanging"
-
-        /// <summary>
-        /// Method called just before a property's value will change.
-        /// </summary>
-        /// <param name="propertyName">The name of the property whose value changing.</param>
-        /// <remarks>
-        /// 
-        /// This method should only be called when a value is definitely going to be changed. This
-        /// should occur after any value validation or other methods are called.
-        /// 
-        /// </remarks>
-        protected virtual void OnPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-            {
-                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Raises the Saved event.
@@ -500,22 +518,7 @@
             }
         }
 
-        /// <summary>
-        /// Raises the Saving event
-        /// </summary>
-        /// <param name="businessObject">
-        /// The business Object.
-        /// </param>
-        /// <param name="action">
-        /// The action.
-        /// </param>
-        protected static void OnSaving(BusinessBase<T, TKey> businessObject, SaveAction action)
-        {
-            if (Saving != null)
-            {
-                Saving(businessObject, new SavedEventArgs(action));
-            }
-        }
+
 
         /// <summary>
         /// Add or remove a broken rule.
@@ -542,30 +545,31 @@
         }
 
         /// <summary>
-        /// Deletes the object from the data store.
+        /// Use this method to change values of properties that participate in INotifyPropertyChanged event notification.
         /// </summary>
-        protected abstract void DataDelete();
+        /// <typeparam name="TValueType">The object type for both the new value and old value.</typeparam>
+        /// <param name="propertyName">The name of the property that should be used when raising the PropertyChanged event.</param>
+        /// <param name="newValue">The new value to be set on the property if it's different from oldValue</param>
+        /// <param name="oldValue">The current value of the property.</param>
+        /// <returns>True if the the property value has been changed, false otherwise.</returns>
+        /// <remarks>
+        /// 
+        /// This is left as virtual so users can override this if they have their own validation needs.
+        /// 
+        /// </remarks>
+        protected virtual bool SetValue<TValueType>(string propertyName, TValueType newValue, ref TValueType oldValue)
+        {
+            bool isChanged = (!Object.Equals(newValue, oldValue));
 
-        /// <summary>
-        /// Inserts a new object to the data store.
-        /// </summary>
-        protected abstract void DataInsert();
+            if (isChanged)
+            {
+                OnPropertyChanging(propertyName);
+                oldValue = newValue;
+                MarkChanged(propertyName);
+            }
+            return isChanged;
 
-        /// <summary>
-        /// Retrieves the object from the data store and populates it.
-        /// </summary>
-        /// <param name="id">
-        /// The unique identifier of the object.
-        /// </param>
-        /// <returns>
-        /// True if the object exists and is being populated successfully
-        /// </returns>
-        protected abstract T DataSelect(TKey id);
-
-        /// <summary>
-        /// Updates the object in its data store.
-        /// </summary>
-        protected abstract void DataUpdate();
+        }
 
         /// <summary>
         /// Disposes the object and frees ressources for the Garbage Collector.
@@ -599,37 +603,40 @@
 
 
         /// <summary>
-        /// Use this method to change values of properties that participate in INotifyPropertyChanged event notification.
+        /// Deletes the object from the data store.
         /// </summary>
-        /// <typeparam name="TValueType">The object type for both the new value and old value.</typeparam>
-        /// <param name="propertyName">The name of the property that should be used when raising the PropertyChanged event.</param>
-        /// <param name="newValue">The new value to be set on the property if it's different from oldValue</param>
-        /// <param name="oldValue">The current value of the property.</param>
-        /// <returns>True if the the property value has been changed, false otherwise.</returns>
-        /// <remarks>
-        /// 
-        /// This is left as virtual so users can override this if they have their own validation needs.
-        /// 
-        /// </remarks>
-        protected virtual bool SetValue<TValueType>(string propertyName, TValueType newValue, ref TValueType oldValue)
-        {
-            bool isChanged = (!Object.Equals(newValue, oldValue));
+        protected abstract void DataDelete();
 
-            if (isChanged)
-            {
-                OnPropertyChanging(propertyName);
-                oldValue = newValue;
-                MarkChanged(propertyName);
-            }
-            return isChanged;
+        /// <summary>
+        /// Inserts a new object to the data store.
+        /// </summary>
+        protected abstract void DataInsert();
 
-        }
+        /// <summary>
+        /// Retrieves the object from the data store and populates it.
+        /// </summary>
+        /// <param name="id">
+        /// The unique identifier of the object.
+        /// </param>
+        /// <returns>
+        /// True if the object exists and is being populated successfully
+        /// </returns>
+        protected abstract T DataSelect(TKey id);
+
+        /// <summary>
+        /// Updates the object in its data store.
+        /// </summary>
+        protected abstract void DataUpdate();
 
         /// <summary>
         /// Reinforces the business rules by adding additional rules to the 
         ///     broken rules collection.
         /// </summary>
         protected abstract void ValidationRules();
+
+        #endregion
+
+        #region Methods Private
 
         /// <summary>
         /// Is called by the save method when the object is old and dirty.

@@ -13,8 +13,7 @@
     /// </summary>
     public abstract class BlogProvider : ProviderBase
     {
-        // Post
-        #region Public Methods
+        #region Method Abstract
 
         /// <summary>
         /// Deletes a BlogRoll from the data store specified by the provider.
@@ -391,28 +390,35 @@
         /// </param>
         public abstract void UpdateReferrer(Referrer referrer);
 
+        #endregion
+
         #region Packaging
+
         /// <summary>
         /// Save installed package id and version
         /// </summary>
         /// <param name="package">Intalled package</param>
         public abstract void SavePackage(InstalledPackage package);
+
         /// <summary>
         /// Log of all files for installed package
         /// </summary>
         /// <param name="packageFiles">List of intalled package files</param>
         public abstract void SavePackageFiles(List<PackageFile> packageFiles);
+
         /// <summary>
         /// Gets list of files for installed package
         /// </summary>
         /// <param name="packageId">Package ID</param>
         /// <returns>List of files for installed package</returns>
         public abstract List<PackageFile> FillPackageFiles(string packageId);
+
         /// <summary>
         /// Gets all installed from gallery packages
         /// </summary>
         /// <returns>List of installed packages</returns>
         public abstract List<InstalledPackage> FillPackages();
+
         /// <summary>
         /// Should delete package and remove all package files
         /// </summary>
@@ -428,16 +434,19 @@
         /// </summary>
         /// <param name="field">Object custom field</param>
         public abstract void SaveCustomField(BlogEngine.Core.Data.Models.CustomField field);
+
         /// <summary>
         /// Fills list of custom fields for a blog
         /// </summary>
         /// <returns>List of custom fields</returns>
         public abstract List<BlogEngine.Core.Data.Models.CustomField> FillCustomFields();
+
         /// <summary>
         /// Deletes custom field
         /// </summary>
         /// <param name="field">Object field</param>
         public abstract void DeleteCustomField(BlogEngine.Core.Data.Models.CustomField field);
+
         /// <summary>
         /// Clear custom fields for a type (post, theme etc)
         /// </summary>
@@ -445,8 +454,6 @@
         /// <param name="customType">Custom type</param>
         /// <param name="objectType">Custom object</param>
         public abstract void ClearCustomFields(string blogId, string customType, string objectType);
-
-        #endregion
 
         #endregion
     }

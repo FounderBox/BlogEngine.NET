@@ -244,7 +244,7 @@
     <Compile Include="Providers\FileSystemProviders\BlogFileSystemProvider.cs" />
     <Compile Include="Providers\FileSystemProviders\BlogFileSystemProviderCollection.cs" />
     <Compile Include="Providers\FileSystemProviders\BlogFileSystemProviderSection.cs" />
-    <Compile Include="Providers\BlogProviderCollection.cs" />
+    <Compile Include="Providers\BlogProvider\BlogProviderCollection.cs" />
     <Compile Include="Providers\CacheProvider\CacheBase.cs" />
     <Compile Include="Providers\CacheProvider\CacheProvider.cs" />
     <Compile Include="Providers\DbProvider\DbConnectionHelper.cs" />
@@ -297,9 +297,9 @@
     <Compile Include="Web\HttpHandlers\ResourceHandler.cs" />
     <Compile Include="Web\HttpHandlers\RsdHandler.cs" />
     <Compile Include="Web\HttpHandlers\SiteMap.cs" />
-    <Compile Include="Providers\BlogProvider.cs" />
-    <Compile Include="Providers\BlogProviderSection.cs" />
-    <Compile Include="Providers\BlogService.cs" />
+    <Compile Include="Providers\BlogProvider\BlogProvider.cs" />
+    <Compile Include="Providers\BlogProvider\BlogProviderSection.cs" />
+    <Compile Include="Providers\BlogProvider\BlogService.cs" />
     <Compile Include="BlogSettings.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="Comment.cs" />

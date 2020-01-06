@@ -16,6 +16,8 @@ namespace BlogEngine.Core
     /// </summary>
     public class Blog : BusinessBase<Blog, Guid>, IComparable<Blog>
     {
+        #region Field 
+
         /// <summary>
         ///     Whether the blog is deleted.
         /// </summary>
@@ -75,6 +77,12 @@ namespace BlogEngine.Core
         /// The blogs.
         /// </summary>
         private static List<Blog> blogs;
+
+        private CacheProvider _cache;
+
+        #endregion
+
+        #region Property
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not the blog is deleted.
@@ -350,7 +358,7 @@ namespace BlogEngine.Core
         /// Sets the current Blog instance as the primary.
         /// </summary>
         public void SetAsPrimaryInstance()
-        {   
+        {
             for (int i = 0; i < Blogs.Count; i++)
             {
                 // Ensure other blogs are not marked as primary.
@@ -367,17 +375,7 @@ namespace BlogEngine.Core
             }
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref = "Blog" /> class. 
-        ///     The default contstructor assign default values.
-        /// </summary>
-        public Blog()
-        {
-            this.Id = Guid.NewGuid();
-            this.BlogId = this.Id;
-            this.DateCreated = DateTime.Now;
-            this.DateModified = DateTime.Now;
-        }
+
 
         /// <summary>
         ///     Gets all blogs.
@@ -395,7 +393,7 @@ namespace BlogEngine.Core
                             blogs = BlogService.FillBlogs().ToList();
 
                             if (blogs.Count == 0)
-                            { 
+                            {
                                 // create the primary instance
 
                                 Blog blog = new Blog();
@@ -708,6 +706,32 @@ namespace BlogEngine.Core
             }
         }
 
+        /// <summary>
+        /// blog instance cache
+        /// </summary>
+        public CacheProvider Cache
+        {
+            get { return _cache ?? (_cache = new CacheProvider(HttpContext.Current.Cache)); }
+        }
+
+
+        #endregion
+
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref = "Blog" /> class. 
+        ///     The default contstructor assign default values.
+        /// </summary>
+        public Blog()
+        {
+            this.Id = Guid.NewGuid();
+            this.BlogId = this.Id;
+            this.DateCreated = DateTime.Now;
+            this.DateModified = DateTime.Now;
+        }
+
+
+        #region Method Public
 
         /// <summary>
         /// Creates a new blog.
@@ -1059,14 +1083,7 @@ namespace BlogEngine.Core
             return this.Name.CompareTo(other.Name);
         }
 
-        private CacheProvider _cache;
-        /// <summary>
-        /// blog instance cache
-        /// </summary>
-        public CacheProvider Cache
-        {
-            get { return _cache ?? (_cache = new CacheProvider(HttpContext.Current.Cache)); }
-        }
+        #endregion
 
     }
 }

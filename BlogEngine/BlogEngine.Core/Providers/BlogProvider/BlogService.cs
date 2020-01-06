@@ -30,20 +30,44 @@ namespace BlogEngine.Core.Providers
         private static BlogProvider _provider;
 
         /// <summary>
-        /// the file storage provider. Don't access this directly. Access it the property accessor
-        /// </summary>
-        private static BlogFileSystemProvider _fileStorageProvider;
-
-        /// <summary>
         /// The providers.
         /// </summary>
         private static BlogProviderCollection _providers;
 
+        /// <summary>
+        /// the file storage provider. Don't access this directly. Access it the property accessor
+        /// </summary>
+        private static BlogFileSystemProvider _fileProvider;
 
         private static BlogFileSystemProviderCollection _fileProviders;
+
         #endregion
 
         #region Properties
+
+        /// <summary>
+        ///     Gets the current provider.
+        /// </summary>
+        public static BlogProvider Provider
+        {
+            get
+            {
+                LoadProviders();
+                return _provider;
+            }
+        }
+
+        /// <summary>
+        ///     Gets a collection of all registered providers.
+        /// </summary>
+        public static BlogProviderCollection Providers
+        {
+            get
+            {
+                LoadProviders();
+                return _providers;
+            }
+        }
 
         /// <summary>
         ///     gets the current FileSystem provider
@@ -53,7 +77,7 @@ namespace BlogEngine.Core.Providers
             get
             {
                 LoadProviders();
-                return _fileStorageProvider;
+                return _fileProvider;
             }
         }
 
@@ -69,116 +93,18 @@ namespace BlogEngine.Core.Providers
             }
         }
 
-        /// <summary>
-        ///     Gets the current provider.
-        /// </summary>
-        public static BlogProvider Provider
-        {
-            get
-            {
-                LoadProviders();
-                return _provider;
-            }
-        }
 
         internal static void ReloadFileSystemProvider()
         {
-            _fileStorageProvider = null;
+            _fileProvider = null;
             LoadProviders();
-        }
-
-        /// <summary>
-        ///     Gets a collection of all registered providers.
-        /// </summary>
-        public static BlogProviderCollection Providers
-        {
-            get
-            {
-                LoadProviders();
-                return _providers;
-            }
         }
 
         #endregion
 
-        #region Public Methods
+        #region Methods Public 
 
-        /// <summary>
-        /// Deletes the specified BlogRoll from the current provider.
-        /// </summary>
-        /// <param name="blogRoll">
-        /// The blog Roll.
-        /// </param>
-        public static void DeleteBlogRoll(BlogRollItem blogRoll)
-        {
-            Provider.DeleteBlogRollItem(blogRoll);
-        }
-
-        /// <summary>
-        /// Deletes the specified Blog from the current provider.
-        /// </summary>
-        /// <param name="blog">
-        /// The blog.
-        /// </param>
-        public static void DeleteBlog(Blog blog)
-        {
-            Provider.DeleteBlog(blog);
-        }
-
-        /// <summary>
-        /// Deletes the storage container for the specified Blog from the current provider.
-        /// </summary>
-        /// <param name="blog">
-        /// The blog.
-        /// </param>
-        public static bool DeleteBlogStorageContainer(Blog blog)
-        {
-            return Provider.DeleteBlogStorageContainer(blog);
-        }
-
-        /// <summary>
-        /// Deletes the specified Category from the current provider.
-        /// </summary>
-        /// <param name="category">
-        /// The category.
-        /// </param>
-        public static void DeleteCategory(Category category)
-        {
-            Provider.DeleteCategory(category);
-        }
-
-        /// <summary>
-        /// Deletes the specified Page from the current provider.
-        /// </summary>
-        /// <param name="page">
-        /// The page to delete.
-        /// </param>
-        public static void DeletePage(Page page)
-        {
-            Provider.DeletePage(page);
-        }
-
-        /// <summary>
-        /// Deletes the specified Post from the current provider.
-        /// </summary>
-        /// <param name="post">
-        /// The post to delete.
-        /// </param>
-        public static void DeletePost(Post post)
-        {
-            Provider.DeletePost(post);
-        }
-
-        /// <summary>
-        /// Deletes the specified Page from the current provider.
-        /// </summary>
-        /// <param name="profile">
-        /// The profile to delete.
-        /// </param>
-        public static void DeleteProfile(AuthorProfile profile)
-        {
-            Provider.DeleteProfile(profile);
-        }
+        #region FILL
 
         /// <summary>
         /// Returns a list of all BlogRolls in the current provider.
@@ -275,6 +201,60 @@ namespace BlogEngine.Core.Providers
             return Provider.FillRights();
         }
 
+        #endregion
+
+        #region LOAD
+
+        /// <summary>
+        /// Loads settings from data storage
+        /// </summary>
+        /// <param name="extensionType">
+        /// Extension Type
+        /// </param>
+        /// <param name="extensionId">
+        /// Extension ID
+        /// </param>
+        /// <returns>
+        /// Settings as stream
+        /// </returns>
+        public static object LoadFromDataStore(ExtensionType extensionType, string extensionId)
+        {
+            return Provider.LoadFromDataStore(extensionType, extensionId);
+        }
+
+        /// <summary>
+        /// Loads the ping services.
+        /// </summary>
+        /// <returns>A StringCollection.</returns>
+        public static StringCollection LoadPingServices()
+        {
+            return Provider.LoadPingServices();
+        }
+
+        /// <summary>
+        /// Loads the settings from the provider and returns
+        /// them in a StringDictionary for the BlogSettings class to use.
+        /// </summary>
+        /// <returns>A StringDictionary.</returns>
+        public static StringDictionary LoadSettings(Blog blog)
+        {
+            return Provider.LoadSettings(blog);
+        }
+
+        /// <summary>
+        /// Loads the stop words from the data store.
+        /// </summary>
+        /// <returns>A StringCollection.</returns>
+        public static StringCollection LoadStopWords()
+        {
+            return Provider.LoadStopWords();
+        }
+
+
+        #endregion
+
+        #region INSERT
+
         /// <summary>
         /// Persists a new BlogRoll in the current provider.
         /// </summary>
@@ -352,49 +332,85 @@ namespace BlogEngine.Core.Providers
             Provider.InsertReferrer(referrer);
         }
 
+        #endregion
+
+        #region DELETE
+
         /// <summary>
-        /// Loads settings from data storage
+        /// Deletes the specified BlogRoll from the current provider.
         /// </summary>
-        /// <param name="extensionType">
-        /// Extension Type
+        /// <param name="blogRoll">
+        /// The blog Roll.
         /// </param>
-        /// <param name="extensionId">
-        /// Extension ID
+        public static void DeleteBlogRoll(BlogRollItem blogRoll)
+        {
+            Provider.DeleteBlogRollItem(blogRoll);
+        }
+
+        /// <summary>
+        /// Deletes the specified Blog from the current provider.
+        /// </summary>
+        /// <param name="blog">
+        /// The blog.
         /// </param>
-        /// <returns>
-        /// Settings as stream
-        /// </returns>
-        public static object LoadFromDataStore(ExtensionType extensionType, string extensionId)
+        public static void DeleteBlog(Blog blog)
         {
-            return Provider.LoadFromDataStore(extensionType, extensionId);
+            Provider.DeleteBlog(blog);
         }
 
         /// <summary>
-        /// Loads the ping services.
+        /// Deletes the storage container for the specified Blog from the current provider.
         /// </summary>
-        /// <returns>A StringCollection.</returns>
-        public static StringCollection LoadPingServices()
+        /// <param name="blog">
+        /// The blog.
+        /// </param>
+        public static bool DeleteBlogStorageContainer(Blog blog)
         {
-            return Provider.LoadPingServices();
+            return Provider.DeleteBlogStorageContainer(blog);
         }
 
         /// <summary>
-        /// Loads the settings from the provider and returns
-        /// them in a StringDictionary for the BlogSettings class to use.
+        /// Deletes the specified Category from the current provider.
         /// </summary>
-        /// <returns>A StringDictionary.</returns>
-        public static StringDictionary LoadSettings(Blog blog)
+        /// <param name="category">
+        /// The category.
+        /// </param>
+        public static void DeleteCategory(Category category)
         {
-            return Provider.LoadSettings(blog);
+            Provider.DeleteCategory(category);
         }
 
         /// <summary>
-        /// Loads the stop words from the data store.
+        /// Deletes the specified Page from the current provider.
         /// </summary>
-        /// <returns>A StringCollection.</returns>
-        public static StringCollection LoadStopWords()
+        /// <param name="page">
+        /// The page to delete.
+        /// </param>
+        public static void DeletePage(Page page)
         {
-            return Provider.LoadStopWords();
+            Provider.DeletePage(page);
+        }
+
+        /// <summary>
+        /// Deletes the specified Post from the current provider.
+        /// </summary>
+        /// <param name="post">
+        /// The post to delete.
+        /// </param>
+        public static void DeletePost(Post post)
+        {
+            Provider.DeletePost(post);
+        }
+
+        /// <summary>
+        /// Deletes the specified Page from the current provider.
+        /// </summary>
+        /// <param name="profile">
+        /// The profile to delete.
+        /// </param>
+        public static void DeleteProfile(AuthorProfile profile)
+        {
+            Provider.DeleteProfile(profile);
         }
 
         /// <summary>
@@ -411,55 +427,9 @@ namespace BlogEngine.Core.Providers
             Provider.RemoveFromDataStore(extensionType, extensionId);
         }
 
-        /// <summary>
-        /// Saves the ping services.
-        /// </summary>
-        /// <param name="services">
-        /// The services.
-        /// </param>
-        public static void SavePingServices(StringCollection services)
-        {
-            Provider.SavePingServices(services);
-        }
+        #endregion
 
-        /// <summary>
-        /// Saves all of the current BlogEngine rights to the provider.
-        /// </summary>
-        public static void SaveRights()
-        {
-            Provider.SaveRights(Right.GetAllRights());
-
-            // This needs to be called after rights are changed.
-            Right.RefreshAllRights();
-        }
-
-        /// <summary>
-        /// Save the settings to the current provider.
-        /// </summary>
-        /// <param name="settings">
-        /// The settings.
-        /// </param>
-        public static void SaveSettings(StringDictionary settings)
-        {
-            Provider.SaveSettings(settings);
-        }
-
-        /// <summary>
-        /// Saves settings to data store
-        /// </summary>
-        /// <param name="extensionType">
-        /// Extension Type
-        /// </param>
-        /// <param name="extensionId">
-        /// Extensio ID
-        /// </param>
-        /// <param name="settings">
-        /// Settings object
-        /// </param>
-        public static void SaveToDataStore(ExtensionType extensionType, string extensionId, object settings)
-        {
-            Provider.SaveToDataStore(extensionType, extensionId, settings);
-        }
+        #region SELECT 
 
         /// <summary>
         /// Returns a BlogRoll based on the specified id.
@@ -531,29 +501,9 @@ namespace BlogEngine.Core.Providers
             return Provider.SelectReferrer(id);
         }
 
-        /// <summary>
-        /// Sets up the required storage files/tables for a new Blog instance, from an existing blog instance.
-        /// </summary>
-        /// <param name="existingBlog">The existing blog instance to base the new blog instance off of.</param>
-        /// <param name="newBlog">The new blog instance.</param>
-        /// <returns>A boolean indicating if the setup process was successful.</returns>
-        public static bool SetupBlogFromExistingBlog(Blog existingBlog, Blog newBlog)
-        {
-            return Provider.SetupBlogFromExistingBlog(existingBlog, newBlog);
-        }
+        #endregion
 
-        /// <summary>
-        /// Setup new blog
-        /// </summary>
-        /// <param name="newBlog">New blog</param>
-        /// <param name="userName">User name</param>
-        /// <param name="email">Email</param>
-        /// <param name="password">Password</param>
-        /// <returns>True if successful</returns>
-        public static bool SetupNewBlog(Blog newBlog, string userName, string email, string password)
-        {
-            return Provider.SetupNewBlog(newBlog, userName, email, password);
-        }
+        #region  UPDATE
 
         /// <summary>
         /// Updates an exsiting BlogRoll.
@@ -632,7 +582,88 @@ namespace BlogEngine.Core.Providers
             Provider.UpdateReferrer(referrer);
         }
 
-        #region FileSystem Static Methods
+        #endregion
+
+        #region SAVE
+
+        /// <summary>
+        /// Saves the ping services.
+        /// </summary>
+        /// <param name="services">
+        /// The services.
+        /// </param>
+        public static void SavePingServices(StringCollection services)
+        {
+            Provider.SavePingServices(services);
+        }
+
+        /// <summary>
+        /// Saves all of the current BlogEngine rights to the provider.
+        /// </summary>
+        public static void SaveRights()
+        {
+            Provider.SaveRights(Right.GetAllRights());
+
+            // This needs to be called after rights are changed.
+            Right.RefreshAllRights();
+        }
+
+        /// <summary>
+        /// Save the settings to the current provider.
+        /// </summary>
+        /// <param name="settings">
+        /// The settings.
+        /// </param>
+        public static void SaveSettings(StringDictionary settings)
+        {
+            Provider.SaveSettings(settings);
+        }
+
+        /// <summary>
+        /// Saves settings to data store
+        /// </summary>
+        /// <param name="extensionType">
+        /// Extension Type
+        /// </param>
+        /// <param name="extensionId">
+        /// Extensio ID
+        /// </param>
+        /// <param name="settings">
+        /// Settings object
+        /// </param>
+        public static void SaveToDataStore(ExtensionType extensionType, string extensionId, object settings)
+        {
+            Provider.SaveToDataStore(extensionType, extensionId, settings);
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Sets up the required storage files/tables for a new Blog instance, from an existing blog instance.
+        /// </summary>
+        /// <param name="existingBlog">The existing blog instance to base the new blog instance off of.</param>
+        /// <param name="newBlog">The new blog instance.</param>
+        /// <returns>A boolean indicating if the setup process was successful.</returns>
+        public static bool SetupBlogFromExistingBlog(Blog existingBlog, Blog newBlog)
+        {
+            return Provider.SetupBlogFromExistingBlog(existingBlog, newBlog);
+        }
+
+        /// <summary>
+        /// Setup new blog
+        /// </summary>
+        /// <param name="newBlog">New blog</param>
+        /// <param name="userName">User name</param>
+        /// <param name="email">Email</param>
+        /// <param name="password">Password</param>
+        /// <returns>True if successful</returns>
+        public static bool SetupNewBlog(Blog newBlog, string userName, string email, string password)
+        {
+            return Provider.SetupNewBlog(newBlog, userName, email, password);
+        }
+
+        #region FileSystem 
 
         internal static void ClearFileSystem()
         {
@@ -915,7 +946,7 @@ namespace BlogEngine.Core.Providers
 
         #endregion
 
-        #region Methods
+        #region Methods Private
 
         /// <summary>
         /// Load the providers from the web.config.
@@ -947,17 +978,18 @@ namespace BlogEngine.Core.Providers
                     }
                 }
             }
-            if (_fileStorageProvider == null)
+
+            if (_fileProvider == null)
             {
                 lock (TheLock)
                 {
-                    if (_fileStorageProvider == null)
+                    if (_fileProvider == null)
                     {
                         var section = (BlogFileSystemProviderSection)WebConfigurationManager.GetSection("BlogEngine/blogFileSystemProvider");
                         _fileProviders = new BlogFileSystemProviderCollection();
                         ProvidersHelper.InstantiateProviders(section.Providers, _fileProviders, typeof(BlogFileSystemProvider));
-                        _fileStorageProvider = _fileProviders[section.DefaultProvider];
-                        if (_fileStorageProvider == null)
+                        _fileProvider = _fileProviders[section.DefaultProvider];
+                        if (_fileProvider == null)
                         {
                             throw new ProviderException("unable to load default file system Blog Provider");
                         }

@@ -148,81 +148,7 @@
 
         #endregion
 
-        #region Events
-
-        /// <summary>
-        ///     Occurs before a new comment is added.
-        /// </summary>
-        public static event EventHandler<CancelEventArgs> AddingComment;
-
-        /// <summary>
-        ///     Occurs when a comment is added.
-        /// </summary>
-        public static event EventHandler<EventArgs> CommentAdded;
-
-        /// <summary>
-        ///     Occurs when a comment has been removed.
-        /// </summary>
-        public static event EventHandler<EventArgs> CommentRemoved;
-
-        /// <summary>
-        ///     Occurs when a comment has been purged.
-        /// </summary>
-        public static event EventHandler<EventArgs> CommentPurged;
-
-        /// <summary>
-        ///     Occurs when a comment has been restored.
-        /// </summary>
-        public static event EventHandler<EventArgs> CommentRestored;
-
-        /// <summary>
-        ///     Occurs when a comment is updated.
-        /// </summary>
-        public static event EventHandler<EventArgs> CommentUpdated;
-
-        /// <summary>
-        ///     Occurs when a visitor rates the post.
-        /// </summary>
-        public static event EventHandler<EventArgs> Rated;
-
-        /// <summary>
-        ///     Occurs before comment is removed.
-        /// </summary>
-        public static event EventHandler<CancelEventArgs> RemovingComment;
-
-        /// <summary>
-        ///     Occurs before comment is purged.
-        /// </summary>
-        public static event EventHandler<CancelEventArgs> PurgingComment;
-
-        /// <summary>
-        ///     Occurs before comment is restored.
-        /// </summary>
-        public static event EventHandler<CancelEventArgs> RestoringComment;
-
-        /// <summary>
-        ///     Occurs when the post is being served to the output stream.
-        /// </summary>
-        public static event EventHandler<ServingEventArgs> Serving;
-
-        /// <summary>
-        ///     Occurs when the post is being published.
-        /// </summary>
-        public static event EventHandler<CancelEventArgs> Publishing;
-
-        /// <summary>
-        ///     Occurs when a post is published.
-        /// </summary>
-        public static event EventHandler<EventArgs> Published;
-
-        /// <summary>
-        ///     Occurs before a new comment is updated.
-        /// </summary>
-        public static event EventHandler<CancelEventArgs> UpdatingComment;
-
-        #endregion
-
-        #region Post Properties
+        #region Properties Post 
 
         /// <summary>
         ///     Gets a sorted collection of all undeleted posts in the blog.
@@ -721,7 +647,7 @@
 
         #endregion
 
-        #region Comment Properties
+        #region Properties Comment
 
         /// <summary>
         ///     Gets a Collection of All Comments for the post
@@ -848,7 +774,81 @@
 
         #endregion
 
-        #region Post Public Methods
+        #region Events
+
+        /// <summary>
+        ///     Occurs before a new comment is added.
+        /// </summary>
+        public static event EventHandler<CancelEventArgs> AddingComment;
+
+        /// <summary>
+        ///     Occurs when a comment is added.
+        /// </summary>
+        public static event EventHandler<EventArgs> CommentAdded;
+
+        /// <summary>
+        ///     Occurs when a comment has been removed.
+        /// </summary>
+        public static event EventHandler<EventArgs> CommentRemoved;
+
+        /// <summary>
+        ///     Occurs when a comment has been purged.
+        /// </summary>
+        public static event EventHandler<EventArgs> CommentPurged;
+
+        /// <summary>
+        ///     Occurs when a comment has been restored.
+        /// </summary>
+        public static event EventHandler<EventArgs> CommentRestored;
+
+        /// <summary>
+        ///     Occurs when a comment is updated.
+        /// </summary>
+        public static event EventHandler<EventArgs> CommentUpdated;
+
+        /// <summary>
+        ///     Occurs when a visitor rates the post.
+        /// </summary>
+        public static event EventHandler<EventArgs> Rated;
+
+        /// <summary>
+        ///     Occurs before comment is removed.
+        /// </summary>
+        public static event EventHandler<CancelEventArgs> RemovingComment;
+
+        /// <summary>
+        ///     Occurs before comment is purged.
+        /// </summary>
+        public static event EventHandler<CancelEventArgs> PurgingComment;
+
+        /// <summary>
+        ///     Occurs before comment is restored.
+        /// </summary>
+        public static event EventHandler<CancelEventArgs> RestoringComment;
+
+        /// <summary>
+        ///     Occurs when the post is being served to the output stream.
+        /// </summary>
+        public static event EventHandler<ServingEventArgs> Serving;
+
+        /// <summary>
+        ///     Occurs when the post is being published.
+        /// </summary>
+        public static event EventHandler<CancelEventArgs> Publishing;
+
+        /// <summary>
+        ///     Occurs when a post is published.
+        /// </summary>
+        public static event EventHandler<EventArgs> Published;
+
+        /// <summary>
+        ///     Occurs before a new comment is updated.
+        /// </summary>
+        public static event EventHandler<CancelEventArgs> UpdatingComment;
+
+        #endregion
+
+        #region Public Methods Post
 
         /// <summary>
         /// Gets whether the current user can publish this post.
@@ -1198,7 +1198,7 @@
 
         #endregion
 
-        #region Comment Public Methods
+        #region Public Methods Comment
 
         /// <summary>
         /// Adds a comment to the collection and saves the post.
@@ -1417,7 +1417,7 @@
 
         #endregion
 
-        #region Implemented Interfaces
+        #region Public Methods Interfaces
 
         #region IComparable<Post>
 
@@ -1483,7 +1483,7 @@
 
         #endregion
 
-        #region Methods
+        #region Public Methods Protected
 
         /// <summary>
         /// Deletes the Post from the current BlogProvider.
